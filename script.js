@@ -1,6 +1,5 @@
 /* script.js*/
-
-function jsFunction () {
-    document.getElementById('content_id')
-        .innerHTML = 'Content Text was Changed by JavaScript Code on GitHub Pages'
-}
+<script src="https://external-js.example.com/feed-section.js"></script>
+<div id="app">
+  <feed-section label="防災"></feed-section>
+</div>
