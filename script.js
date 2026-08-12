@@ -15,7 +15,6 @@
   const waitReady = setInterval(() => {
     if (!window.Vue) return;
 
-    // Blogger 固定ページは iframe 内で DOM が遅延生成される
     const targets = document.querySelectorAll("feed-section");
     if (targets.length === 0) return;
 
@@ -95,7 +94,9 @@
             </div>
             <ul>
               <li v-for="item in overview" :key="item.id">
-                <a :href="item.link">{{ item.title }}</a>
+                <a :href="item.link" class="w3-text-blue w3-hover-text-blue w3-hover-opacity">
+                  {{ item.title }}
+                </a>
                 <div class="date">{{ item.published.toLocaleDateString() }}</div>
                 <div class="excerpt">{{ item.content.slice(0, 80) }}...</div>
               </li>
@@ -108,7 +109,9 @@
             </div>
             <ul>
               <li v-for="item in latest" :key="item.id">
-                <a :href="item.link">{{ item.title }}</a>
+                <a :href="item.link" class="w3-text-blue w3-hover-text-blue w3-hover-opacity">
+                  {{ item.title }}
+                </a>
                 <div class="date">{{ item.published.toLocaleDateString() }}</div>
                 <div class="excerpt">{{ item.content.slice(0, 80) }}...</div>
               </li>
@@ -121,7 +124,9 @@
             </div>
             <ul>
               <li v-for="item in important" :key="item.id">
-                <a :href="item.link">{{ item.title }}</a>
+                <a :href="item.link" class="w3-text-blue w3-hover-text-blue w3-hover-opacity">
+                  {{ item.title }}
+                </a>
                 <div class="date">{{ item.published.toLocaleDateString() }}</div>
                 <div class="excerpt">{{ item.content.slice(0, 80) }}...</div>
               </li>
@@ -132,7 +137,6 @@
       `
     };
 
-    // ④ Blogger 固定ページ内の <feed-section> をすべて mount
     targets.forEach((el) => {
       const props = {};
       for (const attr of el.attributes) {
