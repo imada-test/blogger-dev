@@ -6,7 +6,7 @@
   w3css.href = "https://www.w3schools.com/w3css/5/w3.css";
   document.head.appendChild(w3css);
 
-  // ★ リスト全体のリンク色を W3.CSS 風に統一
+  // ★ リンク色を青に強制（Blogger テーマの黒を上書き）
   const w3linkFix = document.createElement("style");
   w3linkFix.textContent = `
     .feed-section-wrapper a {
@@ -110,7 +110,10 @@
 
             <ul class="w3-ul w3-card w3-round w3-margin-top">
               <li v-for="item in overview" :key="item.id" class="w3-padding w3-hoverable">
-                <a :href="item.link">{{ item.title }}</a>
+                <a :href="item.link"
+                   class="w3-text-blue w3-hover-text-blue w3-hover-opacity w3-medium w3-bold">
+                  {{ item.title }}
+                </a>
                 <div class="date w3-small w3-text-grey">{{ item.published.toLocaleDateString() }}</div>
                 <div class="excerpt w3-small">{{ item.content.slice(0, 80) }}...</div>
               </li>
@@ -125,7 +128,10 @@
 
             <ul class="w3-ul w3-card w3-round w3-margin-top">
               <li v-for="item in latest" :key="item.id" class="w3-padding w3-hoverable">
-                <a :href="item.link">{{ item.title }}</a>
+                <a :href="item.link"
+                   class="w3-text-blue w3-hover-text-blue w3-hover-opacity w3-medium w3-bold">
+                  {{ item.title }}
+                </a>
                 <div class="date w3-small w3-text-grey">{{ item.published.toLocaleDateString() }}</div>
                 <div class="excerpt w3-small">{{ item.content.slice(0, 80) }}...</div>
               </li>
@@ -140,7 +146,10 @@
 
             <ul class="w3-ul w3-card w3-round w3-margin-top">
               <li v-for="item in important" :key="item.id" class="w3-padding w3-hoverable">
-                <a :href="item.link">{{ item.title }}</a>
+                <a :href="item.link"
+                   class="w3-text-blue w3-hover-text-blue w3-hover-opacity w3-medium w3-bold">
+                  {{ item.title }}
+                </a>
                 <div class="date w3-small w3-text-grey">{{ item.published.toLocaleDateString() }}</div>
                 <div class="excerpt w3-small">{{ item.content.slice(0, 80) }}...</div>
               </li>
