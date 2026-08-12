@@ -2,7 +2,7 @@
 (function loadVue() {
   const script = document.createElement("script");
   script.src = "https://unpkg.com/vue@3/dist/vue.global.prod.js";
-  script.onload = initFeedSection;
+  script.onload = initFeedSection;   // Vue 読み込み後に実行
   document.head.appendChild(script);
 })();
 
@@ -10,6 +10,7 @@
 function initFeedSection() {
   const { createApp, ref } = Vue;
 
+  // グローバルコンポーネント登録
   const FeedSection = {
     props: {
       label: { type: String, required: true },
@@ -17,8 +18,7 @@ function initFeedSection() {
       importantSub: { type: String, default: "重要" },
       overviewLimit: { type: Number, default: 1 },
       latestLimit: { type: Number, default: 5 },
-      importantLimit: { type: Number, default: 20 },
-      excerptLength: { type: Number, default: 80 }   // ★本文の抜粋文字数
+      importantLimit: { type: Number, default: 20 }
     },
 
     setup(props) {
@@ -26,48 +26,31 @@ function initFeedSection() {
       const latest = ref([]);
       const important = ref([]);
 
-      // ★HTMLタグ除去
-      const stripHtml = (html) => {
-        const tmp = document.createElement("div");
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || "";
+      const fetchFeed = async (labels) => {
+        const base = `${location.origin}/feeds/posts/summary`;
+        const path = labels.length ? "/-/" + labels.join("/") : "";
+        const url = `${base}${path}?alt=json`;
+
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+          const entries = (data.feed && data.feed.entry) ? data.feed.entry : [];
+
+          return entries.map(e => {
+            const linkObj = e.link.find(l => l.rel === "alternate");
+            return {
+              id: e.id.$t,
+              title: e.title.$t,
+              link: linkObj ? linkObj.href : "#",
+              published: new Date(e.published.$t)
+            };
+          });
+
+        } catch (err) {
+          console.error("Feed error:", err);
+          return [];
+        }
       };
-
-      // ★本文の一部を作る
-      const excerpt = (text, len) =>
-        text.length > len ? text.slice(0, len) + "…" : text;
-const fetchFeed = async (labels) => {
-  const base = `${location.origin}/feeds/posts/summary`;
-  const path = labels.length ? "/-/" + labels.join("/") : "";
-  const url = `${base}${path}?alt=json`;
-
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    const entries = (data.feed && data.feed.entry) ? data.feed.entry : [];
-
-    return entries.map(e => {
-      const linkObj = e.link.find(l => l.rel === "alternate");
-
-      // ★安全な本文取得
-      const rawContent = e.summary?.$t || e.content?.$t || "";
-      const cleanText = stripHtml(rawContent);
-
-      return {
-        id: e.id.$t,
-        title: e.title.$t,
-        link: linkObj ? linkObj.href : "#",
-        published: new Date(e.published.$t),
-        excerpt: excerpt(cleanText, props.excerptLength)
-      };
-    });
-
-  } catch (err) {
-    console.error("Feed error:", err);
-    return [];
-  }
-};
-
 
       const sortByDate = (items) =>
         items.sort((a, b) => b.published - a.published);
@@ -96,10 +79,6 @@ const fetchFeed = async (labels) => {
           <ul>
             <li v-for="item in overview" :key="item.id">
               <a :href="item.link">{{ item.title }}</a>
-              <div class="meta">
-                <span>{{ item.published.toLocaleDateString() }}</span>
-              </div>
-              <p class="excerpt">{{ item.excerpt }}</p>
             </li>
           </ul>
         </div>
@@ -109,10 +88,6 @@ const fetchFeed = async (labels) => {
           <ul>
             <li v-for="item in latest" :key="item.id">
               <a :href="item.link">{{ item.title }}</a>
-              <div class="meta">
-                <span>{{ item.published.toLocaleDateString() }}</span>
-              </div>
-              <p class="excerpt">{{ item.excerpt }}</p>
             </li>
           </ul>
         </div>
@@ -122,10 +97,6 @@ const fetchFeed = async (labels) => {
           <ul>
             <li v-for="item in important" :key="item.id">
               <a :href="item.link">{{ item.title }}</a>
-              <div class="meta">
-                <span>{{ item.published.toLocaleDateString() }}</span>
-              </div>
-              <p class="excerpt">{{ item.excerpt }}</p>
             </li>
           </ul>
         </div>
@@ -133,7 +104,8 @@ const fetchFeed = async (labels) => {
     `
   };
 
-  document.querySelectorAll("feed-section").forEach((el) => {
+  // ③ ページ内のすべての feed-section を mount
+  document.querySelectorAll("feed-section").forEach((el, index) => {
     const app = createApp({});
     app.component("feed-section", FeedSection);
     app.mount(el);
