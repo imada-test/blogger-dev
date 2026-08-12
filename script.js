@@ -1,7 +1,10 @@
-//2026-08-12 23:19
-//mc:eZcqhpYB
-
 (function () {
+
+  // ★ W3.CSS を読み込む（固定ページ iframe 内に適用するため必須）
+  const w3css = document.createElement("link");
+  w3css.rel = "stylesheet";
+  w3css.href = "https://www.w3schools.com/w3css/5/w3.css";
+  document.head.appendChild(w3css);
 
   // ① Vue を読み込む
   const vueScript = document.createElement("script");
@@ -141,4 +144,3 @@
   }, 50);
 
 })();
-
