@@ -1,12 +1,6 @@
-// ① Vue 3 を読み込む（CDN を外部 JS 内で動的ロード）
-(function loadVue() {
-  const script = document.createElement("script");
-  script.src = "https://unpkg.com/vue@3/dist/vue.global.prod.js";
-  document.head.appendChild(script);
-})();
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
-// ② Vue が読み込まれたらコンポーネントを登録
-window.addEventListener("load", () => {
+<script>
   const { createApp, ref } = Vue;
 
   const FeedSection = {
@@ -106,4 +100,6 @@ window.addEventListener("load", () => {
   createApp({
     components: { FeedSection }
   }).mount("#app");
-});
+</script>
+
+
