@@ -1,8 +1,20 @@
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-<script>
-  const { createApp, ref } = Vue;
+// ===============================
+// feed-section.js（外部サーバ）
+// ===============================
 
-  const FeedSection = {
+// ① Vue 3 を読み込む（script.onload で確実に初期化）
+(function loadVue() {
+  const script = document.createElement("script");
+  script.src = "https://unpkg.com/vue@3/dist/vue.global.prod.js";
+  script.onload = registerComponent;
+  document.head.appendChild(script);
+})();
+
+// ② Vue 読み込み後にコンポーネントを登録（UMD/IIFE 形式）
+function registerComponent() {
+  const { ref } = Vue;
+
+  Vue.component("feed-section", {
     props: {
       label: { type: String, required: true },
       overviewSub: { type: String, default: "概要" },
@@ -33,7 +45,8 @@
               id: e.id.$t,
               title: e.title.$t,
               link: linkObj ? linkObj.href : "#",
-              published: new Date(e.published.$t)
+              published: new Date(e.published.$t),
+              content: e.summary ? e.summary.$t : ""
             };
           });
 
@@ -70,6 +83,8 @@
           <ul>
             <li v-for="item in overview" :key="item.id">
               <a :href="item.link">{{ item.title }}</a>
+              <div class="excerpt">{{ item.content.slice(0, 80) }}...</div>
+              <div class="date">{{ item.published.toLocaleDateString() }}</div>
             </li>
           </ul>
         </div>
@@ -79,6 +94,8 @@
           <ul>
             <li v-for="item in latest" :key="item.id">
               <a :href="item.link">{{ item.title }}</a>
+              <div class="excerpt">{{ item.content.slice(0, 80) }}...</div>
+              <div class="date">{{ item.published.toLocaleDateString() }}</div>
             </li>
           </ul>
         </div>
@@ -88,17 +105,17 @@
           <ul>
             <li v-for="item in important" :key="item.id">
               <a :href="item.link">{{ item.title }}</a>
+              <div class="excerpt">{{ item.content.slice(0, 80) }}...</div>
+              <div class="date">{{ item.published.toLocaleDateString() }}</div>
             </li>
           </ul>
         </div>
       </div>
     `
-  };
+  });
 
-  // ③ Vue アプリを mount
-  createApp({
-    components: { FeedSection }
-  }).mount("#app");
-</script>
-
-
+  // ③ Blogger 固定ページ内のすべての <feed-section> を自動 mount
+  document.querySelectorAll("feed-section").forEach((el) => {
+    Vue.createApp({}).mount(el);
+  });
+}
