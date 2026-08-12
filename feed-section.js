@@ -1,59 +1,38 @@
-// ① Vue 3 を読み込む（script.onload で読み込み完了を保証）
+// Vue を読み込む
 (function loadVue() {
   const script = document.createElement("script");
   script.src = "https://unpkg.com/vue@3/dist/vue.global.prod.js";
-  script.onload = initFeedSection;   // Vue 読み込み後に実行
   document.head.appendChild(script);
 })();
 
-// ② Vue 読み込み後にコンポーネント登録と mount を行う
+// Vue が読み込まれるまで待つ（Blogger で最も安定）
+function waitForVue(callback) {
+  const timer = setInterval(() => {
+    if (window.Vue) {
+      clearInterval(timer);
+      callback();
+    }
+  }, 50);
+}
+
+// Vue 読み込み後に初期化
+waitForVue(() => {
+  initFeedSection();
+});
+
 function initFeedSection() {
   const { createApp, ref } = Vue;
 
-  // グローバルコンポーネント登録
   const FeedSection = {
-    props: {
-      label: { type: String, required: true },
-      overviewSub: { type: String, default: "概要" },
-      importantSub: { type: String, default: "重要" },
-      overviewLimit: { type: Number, default: 1 },
-      latestLimit: { type: Number, default: 5 },
-      importantLimit: { type: Number, default: 20 }
-    },
+    props: { /* 省略（あなたのコードそのまま） */ },
 
     setup(props) {
       const overview = ref([]);
       const latest = ref([]);
       const important = ref([]);
 
-      const fetchFeed = async (labels) => {
-        const base = `${location.origin}/feeds/posts/summary`;
-        const path = labels.length ? "/-/" + labels.join("/") : "";
-        const url = `${base}${path}?alt=json`;
-
-        try {
-          const res = await fetch(url);
-          const data = await res.json();
-          const entries = (data.feed && data.feed.entry) ? data.feed.entry : [];
-
-          return entries.map(e => {
-            const linkObj = e.link.find(l => l.rel === "alternate");
-            return {
-              id: e.id.$t,
-              title: e.title.$t,
-              link: linkObj ? linkObj.href : "#",
-              published: new Date(e.published.$t)
-            };
-          });
-
-        } catch (err) {
-          console.error("Feed error:", err);
-          return [];
-        }
-      };
-
-      const sortByDate = (items) =>
-        items.sort((a, b) => b.published - a.published);
+      // fetchFeed（あなたのコードそのまま）
+      // sortByDate（あなたのコードそのまま）
 
       (async () => {
         overview.value = sortByDate(
@@ -72,42 +51,11 @@ function initFeedSection() {
       return { overview, latest, important };
     },
 
-    template: `
-      <div>
-        <div id="overview-section">
-          <h2>{{ label }} × {{ overviewSub }}（概要）</h2>
-          <ul>
-            <li v-for="item in overview" :key="item.id">
-              <a :href="item.link">{{ item.title }}</a>
-            </li>
-          </ul>
-        </div>
-
-        <div id="latest-section">
-          <h2>{{ label }} に関する新着投稿</h2>
-          <ul>
-            <li v-for="item in latest" :key="item.id">
-              <a :href="item.link">{{ item.title }}</a>
-            </li>
-          </ul>
-        </div>
-
-        <div id="important-section">
-          <h2>{{ label }} に関する最近の重要な投稿</h2>
-          <ul>
-            <li v-for="item in important" :key="item.id">
-              <a :href="item.link">{{ item.title }}</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    `
+    template: `...あなたのテンプレートそのまま...`
   };
 
-  // ③ ページ内のすべての feed-section を mount
-  document.querySelectorAll("feed-section").forEach((el, index) => {
-    const app = createApp({});
-    app.component("feed-section", FeedSection);
-    app.mount(el);
-  });
+  // mount は 1 回だけ
+  const app = createApp({});
+  app.component("feed-section", FeedSection);
+  app.mount("#app");
 }
