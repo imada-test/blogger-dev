@@ -1,14 +1,16 @@
-// ① Vue 3 を読み込む（CDN を外部 JS 内で動的ロード）
+// ① Vue 3 を読み込む（script.onload で読み込み完了を保証）
 (function loadVue() {
   const script = document.createElement("script");
   script.src = "https://unpkg.com/vue@3/dist/vue.global.prod.js";
+  script.onload = initFeedSection;   // Vue 読み込み後に実行
   document.head.appendChild(script);
 })();
 
-// ② Vue が読み込まれたらコンポーネントを登録
-window.addEventListener("load", () => {
+// ② Vue 読み込み後にコンポーネント登録と mount を行う
+function initFeedSection() {
   const { createApp, ref } = Vue;
 
+  // グローバルコンポーネント登録
   const FeedSection = {
     props: {
       label: { type: String, required: true },
@@ -102,8 +104,10 @@ window.addEventListener("load", () => {
     `
   };
 
-  // ③ Vue アプリを mount
-  createApp({
-    components: { FeedSection }
-  }).mount("#app");
-});
+  // ③ ページ内のすべての feed-section を mount
+  document.querySelectorAll("feed-section").forEach((el, index) => {
+    const app = createApp({});
+    app.component("feed-section", FeedSection);
+    app.mount(el);
+  });
+}
