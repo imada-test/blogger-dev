@@ -90,9 +90,9 @@
         <div class="feed-section-wrapper">
 
           <div class="overview-section">
-            <h2 class="w3-container w3-light-grey w3-padding w3-border-left w3-border-blue w3-round">
-              {{ label }} についての概要
-            </h2>
+            <div class="w3-container w3-light-grey w3-padding w3-border-left w3-border-blue w3-round">
+              <h2>{{ label }} についての概要</h2>
+            </div>
             <ul>
               <li v-for="item in overview" :key="item.id">
                 <a :href="item.link">{{ item.title }}</a>
@@ -103,9 +103,9 @@
           </div>
 
           <div class="latest-section">
-            <h2 class="w3-container w3-light-grey w3-padding w3-border-left w3-border-green w3-round">
-              {{ label }} に関する新着投稿
-            </h2>
+            <div class="w3-container w3-light-grey w3-padding w3-border-left w3-border-green w3-round">
+              <h2>{{ label }} に関する新着投稿</h2>
+            </div>
             <ul>
               <li v-for="item in latest" :key="item.id">
                 <a :href="item.link">{{ item.title }}</a>
@@ -116,9 +116,9 @@
           </div>
 
           <div class="important-section">
-            <h2 class="w3-container w3-light-grey w3-padding w3-border-left w3-border-red w3-round">
-              {{ label }} に関する最近の重要な投稿
-            </h2>
+            <div class="w3-container w3-light-grey w3-padding w3-border-left w3-border-red w3-round">
+              <h2>{{ label }} に関する最近の重要な投稿</h2>
+            </div>
             <ul>
               <li v-for="item in important" :key="item.id">
                 <a :href="item.link">{{ item.title }}</a>
