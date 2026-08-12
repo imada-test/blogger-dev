@@ -36,37 +36,38 @@ function initFeedSection() {
       // ★本文の一部を作る
       const excerpt = (text, len) =>
         text.length > len ? text.slice(0, len) + "…" : text;
+const fetchFeed = async (labels) => {
+  const base = `${location.origin}/feeds/posts/summary`;
+  const path = labels.length ? "/-/" + labels.join("/") : "";
+  const url = `${base}${path}?alt=json`;
 
-      // ★フィード取得（本文も含む）
-      const fetchFeed = async (labels) => {
-        const base = `${location.origin}/feeds/posts/summary`;
-        const path = labels.length ? "/-/" + labels.join("/") : "";
-        const url = `${base}${path}?alt=json`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    const entries = (data.feed && data.feed.entry) ? data.feed.entry : [];
 
-        try {
-          const res = await fetch(url);
-          const data = await res.json();
-          const entries = (data.feed && data.feed.entry) ? data.feed.entry : [];
+    return entries.map(e => {
+      const linkObj = e.link.find(l => l.rel === "alternate");
 
-          return entries.map(e => {
-            const linkObj = e.link.find(l => l.rel === "alternate");
-            const content = e.summary?.$t || e.content?.$t || "";  // ★本文取得
-            const cleanText = stripHtml(content);                  // ★HTML除去
+      // ★安全な本文取得
+      const rawContent = e.summary?.$t || e.content?.$t || "";
+      const cleanText = stripHtml(rawContent);
 
-            return {
-              id: e.id.$t,
-              title: e.title.$t,
-              link: linkObj ? linkObj.href : "#",
-              published: new Date(e.published.$t),
-              excerpt: excerpt(cleanText, props.excerptLength)     // ★本文の一部
-            };
-          });
-
-        } catch (err) {
-          console.error("Feed error:", err);
-          return [];
-        }
+      return {
+        id: e.id.$t,
+        title: e.title.$t,
+        link: linkObj ? linkObj.href : "#",
+        published: new Date(e.published.$t),
+        excerpt: excerpt(cleanText, props.excerptLength)
       };
+    });
+
+  } catch (err) {
+    console.error("Feed error:", err);
+    return [];
+  }
+};
+
 
       const sortByDate = (items) =>
         items.sort((a, b) => b.published - a.published);
