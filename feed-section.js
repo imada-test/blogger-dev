@@ -1,23 +1,23 @@
-// ===============================
-// feed-section.js（Blogger 専用）
-// ===============================
-
 (function () {
 
-  // ① Vue を確実に読み込む（load イベントは使わない）
+  // ① Vue を読み込む
   const vueScript = document.createElement("script");
   vueScript.src = "https://unpkg.com/vue@3/dist/vue.global.prod.js";
   document.head.appendChild(vueScript);
 
-  // ② Vue 読み込み完了をポーリングで待つ（Blogger で最も安定）
-  const waitVue = setInterval(() => {
+  // ② Vue と Blogger DOM の両方が揃うまで待つ
+  const waitReady = setInterval(() => {
     if (!window.Vue) return;
 
-    clearInterval(waitVue);
+    // Blogger 固定ページは iframe 内で DOM が遅延生成される
+    const targets = document.querySelectorAll("feed-section");
+    if (targets.length === 0) return;
+
+    clearInterval(waitReady);
 
     const { createApp, ref } = Vue;
 
-    // ③ コンポーネント定義（Vue 3 正式構文）
+    // ③ コンポーネント定義
     const FeedSection = {
       props: {
         label: { type: String, required: true },
@@ -81,8 +81,8 @@
       },
 
       template: `
-        <div>
-          <div id="overview-section">
+        <div class="feed-section-wrapper">
+          <div class="overview-section">
             <h2>{{ label }} × {{ overviewSub }}（概要）</h2>
             <ul>
               <li v-for="item in overview" :key="item.id">
@@ -93,7 +93,7 @@
             </ul>
           </div>
 
-          <div id="latest-section">
+          <div class="latest-section">
             <h2>{{ label }} に関する新着投稿</h2>
             <ul>
               <li v-for="item in latest" :key="item.id">
@@ -104,7 +104,7 @@
             </ul>
           </div>
 
-          <div id="important-section">
+          <div class="important-section">
             <h2>{{ label }} に関する最近の重要な投稿</h2>
             <ul>
               <li v-for="item in important" :key="item.id">
@@ -119,10 +119,14 @@
     };
 
     // ④ Blogger 固定ページ内の <feed-section> をすべて mount
-    document.querySelectorAll("feed-section").forEach((el) => {
-      createApp(FeedSection, el.attributes).mount(el);
+    targets.forEach((el) => {
+      const props = {};
+      for (const attr of el.attributes) {
+        props[attr.name] = attr.value;
+      }
+      createApp(FeedSection, props).mount(el);
     });
 
-  }, 50); // ← 50ms ポーリング（Blogger で最も安定）
+  }, 50);
 
 })();
