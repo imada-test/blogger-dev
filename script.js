@@ -1,10 +1,24 @@
 (function () {
 
-  // ★ W3.CSS を読み込む（固定ページ iframe 内に適用するため必須）
+  // ★ W3.CSS を読み込む
   const w3css = document.createElement("link");
   w3css.rel = "stylesheet";
   w3css.href = "https://www.w3schools.com/w3css/5/w3.css";
   document.head.appendChild(w3css);
+
+  // ★ リスト全体のリンク色を W3.CSS 風に統一
+  const w3linkFix = document.createElement("style");
+  w3linkFix.textContent = `
+    .feed-section-wrapper a {
+      color: #1a73e8 !important;
+      text-decoration: none;
+    }
+    .feed-section-wrapper a:hover {
+      color: #0b59d1 !important;
+      opacity: 0.85;
+    }
+  `;
+  document.head.appendChild(w3linkFix);
 
   // ① Vue を読み込む
   const vueScript = document.createElement("script");
@@ -88,47 +102,47 @@
       template: `
         <div class="feed-section-wrapper">
 
+          <!-- 概要 -->
           <div class="overview-section">
             <div class="w3-container w3-light-grey w3-padding w3-border-left w3-border-blue w3-round">
               <h2>{{ label }} についての概要</h2>
             </div>
-            <ul>
-              <li v-for="item in overview" :key="item.id">
-                <a :href="item.link" class="w3-text-blue w3-hover-text-blue w3-hover-opacity">
-                  {{ item.title }}
-                </a>
-                <div class="date">{{ item.published.toLocaleDateString() }}</div>
-                <div class="excerpt">{{ item.content.slice(0, 80) }}...</div>
+
+            <ul class="w3-ul w3-card w3-round w3-margin-top">
+              <li v-for="item in overview" :key="item.id" class="w3-padding w3-hoverable">
+                <a :href="item.link">{{ item.title }}</a>
+                <div class="date w3-small w3-text-grey">{{ item.published.toLocaleDateString() }}</div>
+                <div class="excerpt w3-small">{{ item.content.slice(0, 80) }}...</div>
               </li>
             </ul>
           </div>
 
+          <!-- 新着 -->
           <div class="latest-section">
             <div class="w3-container w3-light-grey w3-padding w3-border-left w3-border-green w3-round">
               <h2>{{ label }} に関する新着投稿</h2>
             </div>
-            <ul>
-              <li v-for="item in latest" :key="item.id">
-                <a :href="item.link" class="w3-text-blue w3-hover-text-blue w3-hover-opacity">
-                  {{ item.title }}
-                </a>
-                <div class="date">{{ item.published.toLocaleDateString() }}</div>
-                <div class="excerpt">{{ item.content.slice(0, 80) }}...</div>
+
+            <ul class="w3-ul w3-card w3-round w3-margin-top">
+              <li v-for="item in latest" :key="item.id" class="w3-padding w3-hoverable">
+                <a :href="item.link">{{ item.title }}</a>
+                <div class="date w3-small w3-text-grey">{{ item.published.toLocaleDateString() }}</div>
+                <div class="excerpt w3-small">{{ item.content.slice(0, 80) }}...</div>
               </li>
             </ul>
           </div>
 
+          <!-- 重要 -->
           <div class="important-section">
             <div class="w3-container w3-light-grey w3-padding w3-border-left w3-border-red w3-round">
               <h2>{{ label }} に関する最近の重要な投稿</h2>
             </div>
-            <ul>
-              <li v-for="item in important" :key="item.id">
-                <a :href="item.link" class="w3-text-blue w3-hover-text-blue w3-hover-opacity">
-                  {{ item.title }}
-                </a>
-                <div class="date">{{ item.published.toLocaleDateString() }}</div>
-                <div class="excerpt">{{ item.content.slice(0, 80) }}...</div>
+
+            <ul class="w3-ul w3-card w3-round w3-margin-top">
+              <li v-for="item in important" :key="item.id" class="w3-padding w3-hoverable">
+                <a :href="item.link">{{ item.title }}</a>
+                <div class="date w3-small w3-text-grey">{{ item.published.toLocaleDateString() }}</div>
+                <div class="excerpt w3-small">{{ item.content.slice(0, 80) }}...</div>
               </li>
             </ul>
           </div>
