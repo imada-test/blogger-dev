@@ -20,6 +20,23 @@
   `;
   document.head.appendChild(w3linkFix);
 
+  // ★ セクション間のマージンを追加（←今回の修正ポイント）
+  const w3marginFix = document.createElement("style");
+  w3marginFix.textContent = `
+    /* 各セクションの下に余白を追加 */
+    .feed-section-wrapper .overview-section,
+    .feed-section-wrapper .latest-section,
+    .feed-section-wrapper .important-section {
+      margin-bottom: 32px;
+    }
+
+    /* 見出しとリストの間の余白 */
+    .feed-section-wrapper h2 {
+      margin-bottom: 12px;
+    }
+  `;
+  document.head.appendChild(w3marginFix);
+
   // ① Vue を読み込む
   const vueScript = document.createElement("script");
   vueScript.src = "https://unpkg.com/vue@3/dist/vue.global.prod.js";
