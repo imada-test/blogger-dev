@@ -1,19 +1,55 @@
 (function () {
 
   /* ---------------------------------------------------------
-   * ① post-labels.css を <style> に埋め込む
+   * ① トースト通知の CSS（右下に2秒表示）
+   * --------------------------------------------------------- */
+  const toastStyle = document.createElement("style");
+  toastStyle.textContent = `
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: #333;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 6px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 9999;
+    }
+    .toast.show {
+      opacity: 1;
+    }
+  `;
+  document.head.appendChild(toastStyle);
+
+  /* トースト通知を表示する関数 */
+  function showToast(message) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.classList.add("show"), 50);
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => toast.remove(), 400);
+    }, 2000);
+  }
+
+  /* ---------------------------------------------------------
+   * ② ラベルボックス用 CSS（淡いパステル黄色＋pill）
    * --------------------------------------------------------- */
   const labelStyle = document.createElement("style");
   labelStyle.textContent = `
-    .post-labels-wrapper {
+    .label-row {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
       align-items: center;
-      gap: 0.6rem;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-                   "Helvetica Neue", Arial, sans-serif;
+      gap: 0.8rem;
+      margin-top: 12px;
     }
+
     .post-labels-title {
       font-weight: 600;
       font-size: 0.95rem;
@@ -21,14 +57,21 @@
       background-color: #eeeeee;
       border: 1px solid #bbbbbb;
       border-radius: 6px;
+      white-space: nowrap;
     }
-    .post-labels-list {
-      display: flex;
+
+    .label-box {
+      background-color: #fff9d6;
+      border: 1px solid #f0e6b8;
+      padding: 10px 12px;
+      border-radius: 10px;
+      display: inline-flex;
       flex-wrap: wrap;
-      justify-content: center;
       gap: 0.4rem;
+      cursor: pointer;
     }
-    .post-label-pill {
+
+    .label-pill {
       display: inline-flex;
       align-items: center;
       padding: 0.15rem 0.7rem;
@@ -40,15 +83,26 @@
       font-weight: 600;
       white-space: nowrap;
     }
-    .post-label-pill:hover {
+
+    .label-pill:hover {
       background-color: #ffd6e5;
       border-color: #d45c78;
+    }
+
+    .feed-section-wrapper a.w3-button {
+      background-color: #1a73e8 !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 999px !important;
+      padding: 6px 16px !important;
+      display: inline-block;
+      font-weight: 600;
     }
   `;
   document.head.appendChild(labelStyle);
 
   /* ---------------------------------------------------------
-   * ② W3.CSS
+   * ③ W3.CSS
    * --------------------------------------------------------- */
   const w3css = document.createElement("link");
   w3css.rel = "stylesheet";
@@ -56,7 +110,7 @@
   document.head.appendChild(w3css);
 
   /* ---------------------------------------------------------
-   * ③ リンク色修正
+   * ④ リンク色修正
    * --------------------------------------------------------- */
   const w3linkFix = document.createElement("style");
   w3linkFix.textContent = `
@@ -72,7 +126,7 @@
   document.head.appendChild(w3linkFix);
 
   /* ---------------------------------------------------------
-   * ④ セクション余白
+   * ⑤ セクション余白
    * --------------------------------------------------------- */
   const w3marginFix = document.createElement("style");
   w3marginFix.textContent = `
@@ -88,14 +142,14 @@
   document.head.appendChild(w3marginFix);
 
   /* ---------------------------------------------------------
-   * ⑤ Vue 読み込み
+   * ⑥ Vue 読み込み
    * --------------------------------------------------------- */
   const vueScript = document.createElement("script");
   vueScript.src = "https://unpkg.com/vue@3/dist/vue.global.prod.js";
   document.head.appendChild(vueScript);
 
   /* ---------------------------------------------------------
-   * ⑥ Vue と DOM の準備待ち
+   * ⑦ Vue と DOM の準備待ち
    * --------------------------------------------------------- */
   const waitReady = setInterval(() => {
     if (!window.Vue) return;
@@ -108,30 +162,41 @@
     const { createApp, ref } = Vue;
 
     /* ---------------------------------------------------------
-     * ⑦ 投稿ラベルコンポーネント
+     * ⑧ ラベルボックスコンポーネント
      * --------------------------------------------------------- */
-    const PostLabels = {
-      name: "PostLabels",
+    const LabelBox = {
+      name: "LabelBox",
       props: {
-        labels: { type: Array, required: true },
-        title: { type: String, default: "投稿ラベル" }
+        labels: { type: Array, required: true }
+      },
+      methods: {
+        copyLabels() {
+          const text = this.labels.join(",") + ",";
+
+          /* ローカル file:// では alert が出る（ブラウザ仕様） */
+          navigator.clipboard.writeText(text).then(() => {
+            /* Web サイトではトースト通知を表示 */
+            if (location.protocol !== "file:") {
+              showToast("コピーしました");
+            } else {
+              alert("コピーしました: " + text);
+            }
+          });
+        }
       },
       template: `
-        <div class="post-labels-wrapper">
-          <span class="post-labels-title">{{ title }}</span>
-          <div class="post-labels-list">
-            <span v-for="(label, index) in labels"
-                  :key="index"
-                  class="post-label-pill">
-              {{ label }}
-            </span>
-          </div>
+        <div class="label-box" @click="copyLabels">
+          <span v-for="(label, index) in labels"
+                :key="index"
+                class="label-pill">
+            {{ label }}
+          </span>
         </div>
       `
     };
 
     /* ---------------------------------------------------------
-     * ⑧ FeedSection コンポーネント
+     * ⑨ FeedSection コンポーネント
      * --------------------------------------------------------- */
     const FeedSection = {
       props: {
@@ -143,14 +208,13 @@
         importantLimit: { type: Number, default: 20 }
       },
 
-      components: { PostLabels },
+      components: { LabelBox },
 
       setup(props) {
         const overview = ref([]);
         const latest = ref([]);
         const important = ref([]);
 
-        /* ラベル検索 URL を生成 */
         const makeSearchURL = (labels) =>
           `/search/label/${labels.join("+")}`;
 
@@ -193,7 +257,7 @@
             await fetchFeed([props.label])
           ).slice(0, props.latestLimit);
 
-          important.value = sortByByDate(
+          important.value = sortByDate(
             await fetchFeed([props.label, props.importantSub])
           ).slice(0, props.importantLimit);
         })();
@@ -202,7 +266,7 @@
       },
 
       /* ---------------------------------------------------------
-       * ⑨ 投稿ラベル列＋「一覧を見る」ボタンを追加
+       * ⑩ 投稿ラベルタイトル＋ボックス（横並び）
        * --------------------------------------------------------- */
       template: `
         <div class="feed-section-wrapper">
@@ -213,9 +277,11 @@
               <h2>{{ label }} についての概要</h2>
             </div>
 
-            <post-labels :labels="[label, overviewSub]"></post-labels>
+            <div class="label-row">
+              <span class="post-labels-title">投稿ラベル</span>
+              <label-box :labels="[label, overviewSub]"></label-box>
+            </div>
 
-            <!-- 一覧を見る（概要） -->
             <div class="w3-margin-top w3-margin-bottom">
               <a :href="makeSearchURL([label, overviewSub])"
                  class="w3-button w3-blue w3-round w3-small">
@@ -234,7 +300,6 @@
               </li>
             </ul>
 
-            <!-- 一覧を見る（概要・下） -->
             <div class="w3-margin-top">
               <a :href="makeSearchURL([label, overviewSub])"
                  class="w3-button w3-blue w3-round w3-small">
@@ -249,9 +314,11 @@
               <h2>{{ label }} に関する新着投稿</h2>
             </div>
 
-            <post-labels :labels="[label]"></post-labels>
+            <div class="label-row">
+              <span class="post-labels-title">投稿ラベル</span>
+              <label-box :labels="[label]"></label-box>
+            </div>
 
-            <!-- 一覧を見る（新着） -->
             <div class="w3-margin-top w3-margin-bottom">
               <a :href="makeSearchURL([label])"
                  class="w3-button w3-blue w3-round w3-small">
@@ -270,7 +337,6 @@
               </li>
             </ul>
 
-            <!-- 一覧を見る（新着・下） -->
             <div class="w3-margin-top">
               <a :href="makeSearchURL([label])"
                  class="w3-button w3-blue w3-round w3-small">
@@ -285,9 +351,11 @@
               <h2>{{ label }} に関する最近の重要な投稿</h2>
             </div>
 
-            <post-labels :labels="[label, importantSub]"></post-labels>
+            <div class="label-row">
+              <span class="post-labels-title">投稿ラベル</span>
+              <label-box :labels="[label, importantSub]"></label-box>
+            </div>
 
-            <!-- 一覧を見る（重要） -->
             <div class="w3-margin-top w3-margin-bottom">
               <a :href="makeSearchURL([label, importantSub])"
                  class="w3-button w3-blue w3-round w3-small">
@@ -306,7 +374,6 @@
               </li>
             </ul>
 
-            <!-- 一覧を見る（重要・下） -->
             <div class="w3-margin-top">
               <a :href="makeSearchURL([label, importantSub])"
                  class="w3-button w3-blue w3-round w3-small">
@@ -320,7 +387,7 @@
     };
 
     /* ---------------------------------------------------------
-     * ⑩ feed-section タグごとに Vue をマウント
+     * ⑪ feed-section タグごとに Vue をマウント
      * --------------------------------------------------------- */
     targets.forEach((el) => {
       const props = {};
@@ -333,4 +400,3 @@
   }, 50);
 
 })();
-//MSC:jVGYwUmu
