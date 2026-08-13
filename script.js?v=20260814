@@ -1,7 +1,7 @@
 (function () {
 
   /* ---------------------------------------------------------
-   * ① post-labels.css を <style> に埋め込む（外部CSS不要）
+   * ① post-labels.css を <style> に埋め込む
    * --------------------------------------------------------- */
   const labelStyle = document.createElement("style");
   labelStyle.textContent = `
@@ -48,7 +48,7 @@
   document.head.appendChild(labelStyle);
 
   /* ---------------------------------------------------------
-   * ② W3.CSS を読み込む
+   * ② W3.CSS
    * --------------------------------------------------------- */
   const w3css = document.createElement("link");
   w3css.rel = "stylesheet";
@@ -56,7 +56,7 @@
   document.head.appendChild(w3css);
 
   /* ---------------------------------------------------------
-   * ③ Blogger テーマのリンク色を上書き
+   * ③ リンク色修正
    * --------------------------------------------------------- */
   const w3linkFix = document.createElement("style");
   w3linkFix.textContent = `
@@ -72,7 +72,7 @@
   document.head.appendChild(w3linkFix);
 
   /* ---------------------------------------------------------
-   * ④ セクション間の余白
+   * ④ セクション余白
    * --------------------------------------------------------- */
   const w3marginFix = document.createElement("style");
   w3marginFix.textContent = `
@@ -88,14 +88,14 @@
   document.head.appendChild(w3marginFix);
 
   /* ---------------------------------------------------------
-   * ⑤ Vue を読み込む
+   * ⑤ Vue 読み込み
    * --------------------------------------------------------- */
   const vueScript = document.createElement("script");
   vueScript.src = "https://unpkg.com/vue@3/dist/vue.global.prod.js";
   document.head.appendChild(vueScript);
 
   /* ---------------------------------------------------------
-   * ⑥ Vue と Blogger DOM の準備待ち
+   * ⑥ Vue と DOM の準備待ち
    * --------------------------------------------------------- */
   const waitReady = setInterval(() => {
     if (!window.Vue) return;
@@ -108,7 +108,7 @@
     const { createApp, ref } = Vue;
 
     /* ---------------------------------------------------------
-     * ⑦ 投稿ラベルコンポーネント（CSSは埋め込み済み）
+     * ⑦ 投稿ラベルコンポーネント
      * --------------------------------------------------------- */
     const PostLabels = {
       name: "PostLabels",
@@ -150,6 +150,10 @@
         const latest = ref([]);
         const important = ref([]);
 
+        /* ラベル検索 URL を生成 */
+        const makeSearchURL = (labels) =>
+          `/search/label/${labels.join("+")}`;
+
         const fetchFeed = async (labels) => {
           const base = `${location.origin}/feeds/posts/summary`;
           const path = labels.length ? "/-/" + labels.join("/") : "";
@@ -189,16 +193,16 @@
             await fetchFeed([props.label])
           ).slice(0, props.latestLimit);
 
-          important.value = sortByDate(
+          important.value = sortByByDate(
             await fetchFeed([props.label, props.importantSub])
           ).slice(0, props.importantLimit);
         })();
 
-        return { overview, latest, important };
+        return { overview, latest, important, makeSearchURL };
       },
 
       /* ---------------------------------------------------------
-       * ⑨ 投稿ラベル列を各セクション直下に挿入
+       * ⑨ 投稿ラベル列＋「一覧を見る」ボタンを追加
        * --------------------------------------------------------- */
       template: `
         <div class="feed-section-wrapper">
@@ -211,6 +215,14 @@
 
             <post-labels :labels="[label, overviewSub]"></post-labels>
 
+            <!-- 一覧を見る（概要） -->
+            <div class="w3-margin-top w3-margin-bottom">
+              <a :href="makeSearchURL([label, overviewSub])"
+                 class="w3-button w3-blue w3-round w3-small">
+                 一覧を見る
+              </a>
+            </div>
+
             <ul class="w3-ul w3-card w3-round w3-margin-top">
               <li v-for="item in overview" :key="item.id" class="w3-padding w3-hoverable">
                 <a :href="item.link"
@@ -221,6 +233,14 @@
                 <div class="excerpt w3-small">{{ item.content.slice(0, 80) }}...</div>
               </li>
             </ul>
+
+            <!-- 一覧を見る（概要・下） -->
+            <div class="w3-margin-top">
+              <a :href="makeSearchURL([label, overviewSub])"
+                 class="w3-button w3-blue w3-round w3-small">
+                 一覧を見る
+              </a>
+            </div>
           </div>
 
           <!-- 新着 -->
@@ -230,6 +250,14 @@
             </div>
 
             <post-labels :labels="[label]"></post-labels>
+
+            <!-- 一覧を見る（新着） -->
+            <div class="w3-margin-top w3-margin-bottom">
+              <a :href="makeSearchURL([label])"
+                 class="w3-button w3-blue w3-round w3-small">
+                 一覧を見る
+              </a>
+            </div>
 
             <ul class="w3-ul w3-card w3-round w3-margin-top">
               <li v-for="item in latest" :key="item.id" class="w3-padding w3-hoverable">
@@ -241,6 +269,14 @@
                 <div class="excerpt w3-small">{{ item.content.slice(0, 80) }}...</div>
               </li>
             </ul>
+
+            <!-- 一覧を見る（新着・下） -->
+            <div class="w3-margin-top">
+              <a :href="makeSearchURL([label])"
+                 class="w3-button w3-blue w3-round w3-small">
+                 一覧を見る
+              </a>
+            </div>
           </div>
 
           <!-- 重要 -->
@@ -250,6 +286,14 @@
             </div>
 
             <post-labels :labels="[label, importantSub]"></post-labels>
+
+            <!-- 一覧を見る（重要） -->
+            <div class="w3-margin-top w3-margin-bottom">
+              <a :href="makeSearchURL([label, importantSub])"
+                 class="w3-button w3-blue w3-round w3-small">
+                 一覧を見る
+              </a>
+            </div>
 
             <ul class="w3-ul w3-card w3-round w3-margin-top">
               <li v-for="item in important" :key="item.id" class="w3-padding w3-hoverable">
@@ -261,6 +305,14 @@
                 <div class="excerpt w3-small">{{ item.content.slice(0, 80) }}...</div>
               </li>
             </ul>
+
+            <!-- 一覧を見る（重要・下） -->
+            <div class="w3-margin-top">
+              <a :href="makeSearchURL([label, importantSub])"
+                 class="w3-button w3-blue w3-round w3-small">
+                 一覧を見る
+              </a>
+            </div>
           </div>
 
         </div>
@@ -281,3 +333,4 @@
   }, 50);
 
 })();
+//MSC:jVGYwUmu
