@@ -1,1 +1,49 @@
+/* このブロック専用のスタイル（他へ影響しないようにクラスで限定） */
+.post-labels-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 「投稿ラベル」タイトル部分：薄い灰色背景＋角丸の四角 */
+.post-labels-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.25rem 0.6rem;
+  background-color: #eeeeee;   /* ★ 薄い灰色に変更 */
+  border: 1px solid #bbbbbb;
+  border-radius: 6px;
+}
+
+/* ラベル一覧コンテナ */
+.post-labels-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+/* ラベル（薄いピンク背景＋ピル型＋太字） */
+.post-label-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid #cc7a8a;
+  background-color: #ffe5ec;   /* 薄いピンク */
+  color: #333;
+  font-size: 0.85rem;
+  font-weight: 600;            /* 太字 */
+  white-space: nowrap;
+}
+
+/* ホバー時のアクセント（任意） */
+.post-label-pill:hover {
+  background-color: #ffd6e5;
+  border-color: #d45c78;
+}
 
