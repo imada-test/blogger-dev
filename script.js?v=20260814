@@ -1,12 +1,51 @@
 (function () {
 
   /* ---------------------------------------------------------
-   * ① 外部 CSS（投稿ラベル用）を読み込む
+   * ① post-labels.css を <style> に埋め込む（外部CSS不要）
    * --------------------------------------------------------- */
-  const labelCSS = document.createElement("link");
-  labelCSS.rel = "stylesheet";
-  labelCSS.href = "https://imada-test.github.io/blogger-dev/post-labels.css";
-  document.head.appendChild(labelCSS);
+  const labelStyle = document.createElement("style");
+  labelStyle.textContent = `
+    .post-labels-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   "Helvetica Neue", Arial, sans-serif;
+    }
+    .post-labels-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.25rem 0.6rem;
+      background-color: #eeeeee;
+      border: 1px solid #bbbbbb;
+      border-radius: 6px;
+    }
+    .post-labels-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .post-label-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.15rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid #cc7a8a;
+      background-color: #ffe5ec;
+      color: #333;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .post-label-pill:hover {
+      background-color: #ffd6e5;
+      border-color: #d45c78;
+    }
+  `;
+  document.head.appendChild(labelStyle);
 
   /* ---------------------------------------------------------
    * ② W3.CSS を読み込む
@@ -69,7 +108,7 @@
     const { createApp, ref } = Vue;
 
     /* ---------------------------------------------------------
-     * ⑦ 投稿ラベルコンポーネント（外部 CSS 使用）
+     * ⑦ 投稿ラベルコンポーネント（CSSは埋め込み済み）
      * --------------------------------------------------------- */
     const PostLabels = {
       name: "PostLabels",
@@ -170,7 +209,6 @@
               <h2>{{ label }} についての概要</h2>
             </div>
 
-            <!-- 投稿ラベル列（概要） -->
             <post-labels :labels="[label, overviewSub]"></post-labels>
 
             <ul class="w3-ul w3-card w3-round w3-margin-top">
@@ -191,7 +229,6 @@
               <h2>{{ label }} に関する新着投稿</h2>
             </div>
 
-            <!-- 投稿ラベル列（新着） -->
             <post-labels :labels="[label]"></post-labels>
 
             <ul class="w3-ul w3-card w3-round w3-margin-top">
@@ -212,7 +249,6 @@
               <h2>{{ label }} に関する最近の重要な投稿</h2>
             </div>
 
-            <!-- 投稿ラベル列（重要） -->
             <post-labels :labels="[label, importantSub]"></post-labels>
 
             <ul class="w3-ul w3-card w3-round w3-margin-top">
@@ -245,4 +281,3 @@
   }, 50);
 
 })();
-
