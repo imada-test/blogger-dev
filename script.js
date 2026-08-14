@@ -407,4 +407,4 @@
   }, 50);
 
 })();
-//MSC:MJBqVAST REV:2026-08-15-0211 (w3,css medium 1rem -> 1.2rem)
+//MSC:MJBqVAST REV:202608150211 (w3,css medium 1rem -> 1.2rem)
