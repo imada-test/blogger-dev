@@ -282,6 +282,8 @@
               <label-box :labels="[label, overviewSub]"></label-box>
             </div>
 
+            <div><p>新しい投稿を書いて、ここに表示するには、ダッシュボード(管理画面)を開いて[投稿]を選択し、[+新しい投稿]ボタンをクリックして投稿エディタを開き、<b> {{ label }} </b> と <b> 概要 </b> をカンマ(,)で区切ってラベルの欄に書き込み、記事のタイトルと本文を書いてから、[公開]ボタンをクリックしてください。</p></div>
+
             <div class="w3-margin-top w3-margin-bottom">
               <a :href="makeSearchURL([label, overviewSub])"
                  class="w3-button w3-blue w3-round w3-small">
@@ -319,6 +321,8 @@
               <label-box :labels="[label]"></label-box>
             </div>
 
+            <div><p>新しい投稿を書いて、ここに表示するには、ダッシュボード(管理画面)を開いて[投稿]を選択し、[+新しい投稿]ボタンをクリックして投稿エディタを開き、<b> {{ label }} </b> をラベルの欄に書き込み、記事のタイトルと本文を書いてから、[公開]ボタンをクリックしてください。</p></div>
+
             <div class="w3-margin-top w3-margin-bottom">
               <a :href="makeSearchURL([label])"
                  class="w3-button w3-blue w3-round w3-small">
@@ -355,6 +359,8 @@
               <span class="post-labels-title">投稿ラベル</span>
               <label-box :labels="[label, importantSub]"></label-box>
             </div>
+
+            <div><p>新しい投稿を書いて、ここに表示するには、ダッシュボード(管理画面)を開いて[投稿]を選択し、[+新しい投稿]ボタンをクリックして投稿エディタを開き、<b> {{ label }} </b> と <b> 重要 </b> をカンマ(,)で区切ってラベルの欄に書き込み、記事のタイトルと本文を書いてから、[公開]ボタンをクリックしてください。</p></div>
 
             <div class="w3-margin-top w3-margin-bottom">
               <a :href="makeSearchURL([label, importantSub])"
@@ -400,4 +406,4 @@
   }, 50);
 
 })();
-//MSC:jVGYwUmu
+//MSC:jVGYwUmu rev:2026-08-14 19:07
