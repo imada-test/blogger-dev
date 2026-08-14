@@ -143,7 +143,7 @@
     /* W3.CSS のフォントサイズを Blogger 標準に合わせる */
     .w3-small,
     .w3-medium {
-      font-size: 1rem !important;
+      font-size: 1.2rem !important;
     }
   `;
   document.head.appendChild(w3fontFix);
