@@ -1,0 +1,155 @@
+<div id="tickerUnified"></div>
+
+<style>
+#tickerUnified .ticker-box {
+  width: 100%;
+  height: 40px;
+  overflow: hidden;
+  border: 2px solid #000;
+  font-family: monospace;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+#tickerUnified .ticker-box span {
+  white-space: nowrap;
+  position: absolute;
+  left: 100%;
+}
+
+#tickerUnified .ticker-link {
+  display: inline-block;
+  font-size: 12px;
+  color: #003366;
+  background: #fff;
+  border: 2px solid #003366;
+  padding: 6px 14px;
+  margin: 10px 0 20px 0;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.ticker-emergency {
+  background: #ffff00;
+  color: #ff0000;
+}
+.ticker-emergency span {
+  color: #ff0000;
+}
+
+.ticker-normal {
+  background: #001a33;
+  color: #fff;
+}
+.ticker-normal span {
+  color: #fff;
+}
+</style>
+
+<script>
+(function() {
+  const area = document.getElementById("tickerUnified");
+  if (!area) return;
+
+  const isHome = location.pathname === "/";
+  const today = new Date();
+
+  /* ▼ ラベル正規化（不可視文字除去＋空白統一） */
+  function normalizeLabel(str) {
+    return str
+      .replace(/[\u200B\uFEFF\u00A0]/g, "")  // ゼロ幅・BOM・NBSP
+      .replace(/\u3000/g, " ")              // 全角スペース → 半角
+      .replace(/\s+/g, " ")                 // 連続スペース → 1 個
+      .trim();
+  }
+
+  /* ▼ 全投稿取得 */
+  fetch("/feeds/posts/default?alt=json&max-results=150")
+    .then(r => r.json())
+    .then(data => {
+      const entries = data.feed.entry || [];
+
+      /* ▼ 電光掲示板系だけ抽出 */
+      const boards = entries.filter(entry => {
+        const labels = (entry.category || []).map(c => normalizeLabel(c.term));
+        return labels.some(lb =>
+          lb.includes("電光掲示板") || lb.includes("緊急電光掲示板")
+        );
+      });
+
+      boards.forEach(entry => {
+        const title = entry.title.$t;
+        const link = entry.link.find(l => l.rel === "alternate").href;
+
+        const rawLabels = (entry.category || []).map(c => c.term);
+        const labels = rawLabels.map(lb => normalizeLabel(lb));
+
+        /* ▼ 空白なし／半角空白／全角空白すべて対応 */
+        const reStart = /表示開始日 *\d{4}-\d{1,2}-\d{1,2}/;
+        const reExpire = /表示期限日 *\d{4}-\d{1,2}-\d{1,2}/;
+
+        /* ▼ 表示開始日チェック */
+        const startLabel = labels.find(lb => reStart.test(lb));
+        if (startLabel) {
+          const dateStr = startLabel.match(/\d{4}-\d{1,2}-\d{1,2}/)[0];
+          const startDate = new Date(dateStr);
+          if (today < startDate) return;
+        }
+
+        /* ▼ 表示期限日チェック */
+        const expireLabel = labels.find(lb => reExpire.test(lb));
+        if (expireLabel) {
+          const dateStr = expireLabel.match(/\d{4}-\d{1,2}-\d{1,2}/)[0];
+          const expireDate = new Date(dateStr);
+          if (today > expireDate) return;
+        }
+
+        /* ▼ デザイン判定 */
+        const hasEmergencyBoard = labels.includes("緊急電光掲示板");
+        const hasEmergency = labels.includes("緊急");
+        const hasAll = labels.includes("全記事");
+        const hasDenkou = labels.includes("電光掲示板");
+
+        let mode = "normal";
+        if (hasEmergencyBoard || (hasDenkou && hasEmergency)) {
+          mode = "emergency";
+        } else if (hasDenkou && hasAll) {
+          mode = "all";
+        } else {
+          mode = "home";
+        }
+
+        if (mode === "home" && !isHome) return;
+
+        /* ▼ 電光掲示板生成 */
+        const box = document.createElement("div");
+        box.className = "ticker-box";
+        box.classList.add(mode === "emergency" ? "ticker-emergency" : "ticker-normal");
+
+        const span = document.createElement("span");
+        span.textContent = title;
+        box.appendChild(span);
+        area.appendChild(box);
+
+        /* ▼ スクロール */
+        let pos = box.offsetWidth;
+        function scroll() {
+          pos -= 1.2;
+          span.style.left = pos + "px";
+          if (pos < -span.offsetWidth) pos = box.offsetWidth;
+          requestAnimationFrame(scroll);
+        }
+        scroll();
+
+        /* ▼ 記事リンク */
+        const a = document.createElement("a");
+        a.href = link;
+        a.textContent = "記事を読む";
+        a.className = "ticker-link";
+        area.appendChild(a);
+      });
+    });
+})();
+</script>
