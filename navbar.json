@@ -1,0 +1,6 @@
+[
+  { "text": "ホーム", "href": "/" },
+  { "text": "ニュース", "href": "/search/label/News" },
+  { "text": "このブログについて", "href": "/p/about.html" },
+  { "text": "お問い合わせ", "href": "/p/contact.html" }
+]
