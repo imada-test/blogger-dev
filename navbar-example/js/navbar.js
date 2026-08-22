@@ -1,20 +1,30 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const container = document.getElementById("navbar-container");
+  const navbarContainer = document.getElementById("navbar-container");
 
-  if (!container) {
+  if (!navbarContainer) {
+    console.error("#navbar-container が見つかりません。");
     return;
   }
 
   try {
-    const response = await fetch("https://blogger-dev.imada-test.workers.dev/navbar-example/navbar.html");
+    const response = await fetch("/navbar-example/navbar.html");
 
     if (!response.ok) {
-      throw new Error(`navbar.html の読み込みに失敗しました: ${response.status}`);
+      throw new Error(
+        `navbar.html の読み込みに失敗しました。HTTPステータス: ${response.status}`
+      );
     }
 
-    const html = await response.text();
-    container.innerHTML = html;
+    const navbarHtml = await response.text();
+
+    navbarContainer.innerHTML = navbarHtml;
   } catch (error) {
-    console.error(error);
+    console.error("Navigation Bar の読み込みに失敗しました:", error);
+
+    navbarContainer.innerHTML = `
+      <p style="color: red;">
+        Navigation Bar を読み込めませんでした。
+      </p>
+    `;
   }
 });
