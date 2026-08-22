@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const response = await fetch("navbar.html");
+    const response = await fetch("https://blogger-dev.imada-test.workers.dev/navbar-example/navbar.html");
 
     if (!response.ok) {
       throw new Error(`navbar.html の読み込みに失敗しました: ${response.status}`);
