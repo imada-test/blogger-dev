@@ -255,7 +255,7 @@
         },
 
         async fetchFeed(labels) {
-          const base = `${location.origin}/feeds/posts/summary`;
+          const base = `/feeds/posts/summary`;
           const path = labels.length ? "/-/" + labels.join("/") : "";
           const url = `${base}${path}?alt=json`;
 
