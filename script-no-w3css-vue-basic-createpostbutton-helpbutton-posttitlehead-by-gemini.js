@@ -232,9 +232,9 @@
 
         copyAndNavigate(labels) {
           const text = labels.join(",") + ",";
-          // blogid : global variable defined in theme XHTML
-          //  blogid = "<data:blog.blogId/>"
-          const targetUrl = "https://www.blogger.com/blog/posts/" + blogid;
+          // BLOG_ID : global variable defined in theme XHTML
+          // BLOG_ID = "<data:blog.blogId/>"
+          const targetUrl = "https://www.blogger.com/blog/posts/" + BLOG_ID;
           
           navigator.clipboard.writeText(text).then(() => {
             if (location.protocol !== "file:") {
