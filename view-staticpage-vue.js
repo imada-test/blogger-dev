@@ -1,6 +1,6 @@
 (function () {
 
-  BLOG_ID="8624434127519986313";
+  blog_id="8624434127519986313";
 
   /* ---------------------------------------------------------
    * ① Bootstrap Icons および スタイル（CSS）の動的注入
@@ -254,7 +254,7 @@
 
         copyAndNavigate(labels) {
           const text = labels.join(",") + ",";
-          const targetUrl = "https://www.blogger.com/blog/posts/" + BLOG_ID;
+          const targetUrl = "https://www.blogger.com/blog/posts/" + blog_id;
           
           navigator.clipboard.writeText(text).then(() => {
             if (location.protocol !== "file:") {
