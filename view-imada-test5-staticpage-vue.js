@@ -358,7 +358,7 @@
               <button type="button"
                       class="btn btn-outline-success btn-sm rounded-pill"
                       @click="copyAndNavigate([label, overviewSub])">
-                新しい投稿記事をここに表示する
+                新しい記事を投稿し、ここに表示する
               </button>
               <button type="button"
                       class="btn btn-outline-secondary btn-sm rounded-pill"
@@ -416,7 +416,7 @@
               <button type="button"
                       class="btn btn-outline-success btn-sm rounded-pill"
                       @click="copyAndNavigate([label])">
-                新しい投稿記事をここに表示する
+                新しい記事を投稿し、ここに表示する
               </button>
               <button type="button"
                       class="btn btn-outline-secondary btn-sm rounded-pill"
@@ -474,7 +474,7 @@
               <button type="button"
                       class="btn btn-outline-success btn-sm rounded-pill"
                       @click="copyAndNavigate([label, importantSub])">
-                新しい投稿記事をここに表示する
+                新しい記事を投稿し、ここに表示する
               </button>
               <button type="button"
                       class="btn btn-outline-secondary btn-sm rounded-pill"
@@ -532,7 +532,7 @@
               <button type="button"
                       class="btn btn-outline-success btn-sm rounded-pill"
                       @click="copyAndNavigate([label, basicSub])">
-                新しい投稿記事をここに表示する
+                新しい記事を投稿し、ここに表示する
               </button>
               <button type="button"
                       class="btn btn-outline-secondary btn-sm rounded-pill"
