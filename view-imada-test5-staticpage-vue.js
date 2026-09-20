@@ -358,7 +358,7 @@
               <button type="button"
                       class="btn btn-outline-success btn-sm rounded-pill"
                       @click="copyAndNavigate([label, overviewSub])">
-                新しい投稿記事を書いてここに表示する
+                新しい投稿記事をここに表示する
               </button>
               <button type="button"
                       class="btn btn-outline-secondary btn-sm rounded-pill"
@@ -416,7 +416,7 @@
               <button type="button"
                       class="btn btn-outline-success btn-sm rounded-pill"
                       @click="copyAndNavigate([label])">
-                新しい投稿記事を書いてここに表示する
+                新しい投稿記事をここに表示する
               </button>
               <button type="button"
                       class="btn btn-outline-secondary btn-sm rounded-pill"
@@ -474,7 +474,7 @@
               <button type="button"
                       class="btn btn-outline-success btn-sm rounded-pill"
                       @click="copyAndNavigate([label, importantSub])">
-                新しい投稿記事を書いてここに表示する
+                新しい投稿記事をここに表示する
               </button>
               <button type="button"
                       class="btn btn-outline-secondary btn-sm rounded-pill"
@@ -532,7 +532,7 @@
               <button type="button"
                       class="btn btn-outline-success btn-sm rounded-pill"
                       @click="copyAndNavigate([label, basicSub])">
-                新しい投稿記事を書いてここに表示する
+                新しい投稿記事をここに表示する
               </button>
               <button type="button"
                       class="btn btn-outline-secondary btn-sm rounded-pill"
@@ -580,7 +580,7 @@
             <div class="custom-modal-content">
               <h4 class="mb-3">投稿手順のヘルプ</h4>
               <ol>
-                <li>この[ヘルプ]のボタンの隣にある[新しい投稿記事を書いてここに表示する]ボタンをクリックしてください。</li>
+                <li>この[ヘルプ]のボタンの隣にある[新しい投稿記事をここに表示する]ボタンをクリックしてください。</li>
                 <li>Google Blogger にサインイン(ログイン)していない場合には、サインイン(ログイン)してください。</li>
                 <li>ダッシュボード(管理画面)を開いて[投稿]を選択します。</li>
                 <li>[+新しい投稿]ボタンをクリックして投稿エディタを開きます。</li>
