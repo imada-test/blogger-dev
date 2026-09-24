@@ -4,7 +4,7 @@
   // 設定項目（実際の環境に合わせて書き換えてください）
   // ==========================================
   const CLIENT_ID = "1018538662170-cu7gcafar58nqu8kghpqno0hc7ds3bth.apps.googleusercontent.com";
-  const blog_id = "8624434127519986313";
+  const blog_id = "512075793597803708";
 
   // Google 認証クライアントの保持
   let tokenClient = null;
